@@ -141,6 +141,7 @@ def game():
 
     start_timer = time.time()
     state = over()
+    pressed = None
 
     while state == None:
         mouse_position = None
@@ -148,14 +149,21 @@ def game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+            
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pressed = pygame.mouse.get_pressed()
+
+            if event.type == pygame.MOUSEBUTTONUP:
                 mouse_position = pygame.mouse.get_pos()
-                if mouse_position[1] < HEIGHT - WIDTH:
+                if mouse_position[1] < HEIGHT - WIDTH or mouse_position[1] > HEIGHT or mouse_position[0] < 0 or mouse_position[0] > WIDTH:
                     continue
-                if pygame.mouse.get_pressed()[0]: # Left click
+
+                if pressed[0] and not pygame.mouse.get_pressed()[0]:
                     click = 'left'
-                elif pygame.mouse.get_pressed()[2]: # Right click
+                if pressed[2] and not pygame.mouse.get_pressed()[2]:
                     click = 'right'
+                pressed = pygame.mouse.get_pressed()
+
 
         if click != None:
             j, i = mouse_position
@@ -208,9 +216,10 @@ def game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    run = False
-                    break
+                if event.type == pygame.MOUSEBUTTONUP:
+                    x, y = pygame.mouse.get_pos()
+                    if x > 0 and x < WIDTH and y > HEIGHT - WIDTH and y < HEIGHT:
+                        run = False
 
         return post_game_screen(state, None)
 
