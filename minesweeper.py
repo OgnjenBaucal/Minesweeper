@@ -2,6 +2,7 @@ from constants import *
 import pygame
 import time
 import random
+import os.path
 
 class Block:
     def __init__(self):
@@ -35,6 +36,9 @@ def write_best_record():
 
 def read_best_record():
     global best_record
+    if not os.path.isfile("record.txt"):
+        return
+    
     with open("record.txt", 'r') as file:
         best_record = float(file.readline())
 
@@ -283,7 +287,7 @@ def menu():
                 return game()
 
 def main():
-    global screen, font, best_record
+    global screen
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
